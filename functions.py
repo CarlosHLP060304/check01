@@ -24,46 +24,43 @@ def drawYellowLines(frame):
 
 def drawWhiteLines(frame):
     h, w, c = frame.shape
-    roi = frame[h//2:h, :w//2+w//4] 
-    cv2.imshow("ROI", roi)  # Exibir a região de interesse
+    roi = frame[h//2:h, :w//2+w//4]
     hsv = convertToHsv(roi)
-    low_white = np.array([0, 0, 200]) 
-    up_white = np.array([180, 30, 255])  
-    mask_white = cv2.inRange(hsv, low_white, up_white)    
+    low_white = np.array([0, 0, 200])
+    up_white = np.array([180, 30, 255])
+    mask_white = cv2.inRange(hsv, low_white, up_white)
     edges_white = cv2.Canny(mask_white, 75, 150)
     lines_white = cv2.HoughLinesP(edges_white, 1, np.pi / 180, 50, maxLineGap=50)
     if lines_white is not None:
         for line in lines_white:
-            x1, y1, x2, y2 = line[0]                 
-            cv2.line(roi, (x1, y1), (x2, y2), (255, 0, 0), 2) 
+            x1, y1, x2, y2 = line[0]
+            cv2.line(roi, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
 def captureBlackVehicles(frame):
     h, w, c = frame.shape
     roi = frame[h // 2 + h//14 : h , w//2 : w//2+w//4+w//4]
     hsv = convertToHsv(roi)
-    low_black = np.array([0, 0, 0])  # Limite inferior para preto
-    up_black = np.array([180, 255, 50])  # Limite superior para preto
+    low_black = np.array([0, 0, 0])
+    up_black = np.array([180, 255, 50])
     mask_black = cv2.inRange(hsv, low_black, up_black)
     contours_black, _ = cv2.findContours(mask_black, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours_black:
         x, y, w, h = cv2.boundingRect(cnt)
-        if w * h > 3000:  # Filtrar pequenos ruídos
+        if w * h > 3000:
             cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 0, 0), 2)
             cv2.putText(roi, "Vehicle Detected", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
 def captureWhiteVehicles(frame):
     h, w, c = frame.shape
-    roi = frame[h // 2 :h//2+h//4, w//2+w//7:w] 
-    cv2.imshow("RI", roi)  # Exibir a região de interesse
-    # Detectar veículos brancos
+    roi = frame[h // 2 :h//2+h//4, w//2+w//7:w]
     hsv = convertToHsv(roi)
-    low_white = np.array([0, 0, 200])  # Limite inferior para branco
-    up_white = np.array([180, 30, 255])  # Limite superior para branco
+    low_white = np.array([0, 0, 200])
+    up_white = np.array([180, 30, 255])
     mask_white = cv2.inRange(hsv, low_white, up_white)
     contours_white, _ = cv2.findContours(mask_white, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours_white:
         x, y, w, h = cv2.boundingRect(cnt)
-        if w * h > 3000 and h>40 :  # Filtrar pequenos ruídos
+        if w * h > 3000 and h > 40:
             cv2.rectangle(roi, (x, y), (x + w, y + h), (255, 255, 255), 2)
             cv2.putText(roi, "Vehicle Detected", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
