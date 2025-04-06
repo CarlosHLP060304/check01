@@ -14,6 +14,8 @@ while True:
 
     drawWhiteLines(frame)
 
+    captureVehicles(frame)
+
     displayFrame(frame)
 
     key = returnKey()
