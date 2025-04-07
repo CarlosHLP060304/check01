@@ -9,7 +9,9 @@ while True:
         break
 
     frame = applyGaussianBlur(frame)
+
     frame = process_frame(frame)
+    
     drawYellowLines(frame)
 
     drawWhiteLines(frame)
