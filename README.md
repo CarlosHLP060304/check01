@@ -3,16 +3,13 @@
 
 ### INFORMAÇÕES DOS INTEGRANTES
 
-Nome: ________ 
-RM: ________
+Nome: Carlos Henrique Lins Ponchirolli
+RM: 94003
 
-Nome: ________
-RM: ________
+Nome: Leonardo Arantes Bianchini Gomes
+RM: 94183
 
-Nome: ________
-RM: ________
-
-LINK DO VIDEO: ____________________
+LINK DO VIDEO: 
 
 ## Visão Computacional para Assistência ao Motorista
 
