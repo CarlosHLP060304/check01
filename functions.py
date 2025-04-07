@@ -14,7 +14,7 @@ def convertToHsv(frame):
 def calculate_slope(x1, y1, x2, y2):
     """Calcula a inclinação de uma linha."""
     if x2 - x1 == 0:
-        return 999  # Evita divisão por zero (reta vertical)
+        return 999  
     return (y2 - y1) / (x2 - x1)
 
 def draw_average_line(image, lines, color):
@@ -38,17 +38,13 @@ def draw_average_line(image, lines, color):
         return None
 
 def process_frame(frame):
-    """Processa cada frame para calcular a direção, exibir o texto correspondente e desenhar o ponto médio."""
     imshape = frame.shape
 
-    # 1. Escala de cinza e suavização
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (9, 9), 0)
 
-    # 2. Detecção de bordas
     edges = cv2.Canny(blur, 60, 150)
 
-    # 3. Máscara da região de interesse
     vertices = np.array([[ 
         (0, imshape[0]),
         (450, 320),
@@ -59,7 +55,6 @@ def process_frame(frame):
     cv2.fillPoly(mask, vertices, 255)
     masked_edges = cv2.bitwise_and(edges, mask)
 
-    # 4. Transformada de Hough para encontrar linhas
     lines = cv2.HoughLinesP(masked_edges, 2, np.pi / 180, 45, np.array([]), 40, 100)
 
     left_lines, right_lines = [], []
@@ -76,20 +71,18 @@ def process_frame(frame):
                     left_lines.append((x1, y1, x2, y2))
                     left_slopes.append(slope)
 
-    # Calcular direção, ângulo e ponto médio
     direction = "Reto"
     curve_intensity = "Leve"
     angle = 0
     mid_x, mid_y = None, None
     if left_lines and right_lines:
-        # Calcular ângulo médio
+
         left_slope = np.mean(left_slopes)
         right_slope = np.mean(right_slopes)
         avg_slope = (left_slope + right_slope) / 2
         angle_rad = math.atan(avg_slope)
         angle = math.degrees(angle_rad)
 
-        # Determinar direção com base no ângulo
         if angle <= -7 and angle > -6:
             direction = "Reto"
         elif angle < -8:
@@ -102,21 +95,19 @@ def process_frame(frame):
         else:
             curve_intensity = "Acentuada"
 
-        # Calcular ponto médio entre as linhas
-        left_line = draw_average_line(frame, left_lines, (255, 0, 0))  # Vermelho
-        right_line = draw_average_line(frame, right_lines, (0, 0, 255))  # Azul
+        left_line = draw_average_line(frame, left_lines, (255, 0, 0))  
+        right_line = draw_average_line(frame, right_lines, (0, 0, 255))  
         if left_line and right_line:
             mid_x = (left_line[2] + right_line[2]) // 2
             mid_y = (left_line[3] + right_line[3]) // 2
 
-    # Exibir direção no canto esquerdo da imagem
     cv2.putText(frame, f"Direcao: {direction}({curve_intensity})", (50, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
 
-    # Desenhar ponto médio no centro da pista
+   
     if mid_x is not None and mid_y is not None:
-        cv2.circle(frame, (mid_x, mid_y), 10, (0, 255, 0), -1)  # Verde
+        cv2.circle(frame, (mid_x, mid_y), 10, (0, 255, 0), -1) 
 
     return frame
 

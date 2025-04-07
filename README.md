@@ -9,7 +9,7 @@ RM: 94003
 Nome: Leonardo Arantes Bianchini Gomes
 RM: 94183
 
-LINK DO VIDEO: 
+LINK DO VIDEO: https://youtu.be/b5isTJWQMsc
 
 ## Visão Computacional para Assistência ao Motorista
 
